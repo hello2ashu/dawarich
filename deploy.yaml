@@ -65,8 +65,8 @@ services:
       ENABLE_TELEMETRY: false # More on telemetry: https://dawarich.app/docs/tutorials/telemetry
       APPLICATION_PROTOCOL: http
       #PHOTON_API_HOST: app.chibigeo.com/v1/photon
-      PHOTON_API_KEY: ck_2ggpiKlHKGg2hqwsT-1Co-FHL9EKW7AA
-      PHOTON_API_USE_HTTPS: true
+      GEOAPIFY_API_KEY: ck_2ggpiKlHKGg2hqwsT-1Co-FHL9EKW7AA
+      GEOAPIFY_API_USE_HTTPS: true
     logging:
       driver: "json-file"
       options:
@@ -119,8 +119,8 @@ services:
       STORE_GEODATA: true
       APPLICATION_PROTOCOL: http
       #PHOTON_API_HOST: app.chibigeo.com/v1/photon
-      PHOTON_API_KEY: ck_2ggpiKlHKGg2hqwsT-1Co-FHL9EKW7AA
-      PHOTON_API_USE_HTTPS: true
+      GEOAPIFY_API_KEY: ck_2ggpiKlHKGg2hqwsT-1Co-FHL9EKW7AA
+      GEOAPIFY_API_USE_HTTPS: true
     logging:
       driver: "json-file"
       options:
