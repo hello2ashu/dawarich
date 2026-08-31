@@ -20,7 +20,7 @@ services:
     restart: on-failure:5
 
   dawarich_redis:
-    image: redis:7.11-alpine
+    image: redis:7.4.11-alpine
     command: redis-server
     container_name: Dawarich-REDIS
     user: 1026:100
