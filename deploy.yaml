@@ -54,7 +54,7 @@ services:
       DATABASE_NAME: dawarich_development
       SELF_HOSTED: true
       STORE_GEODATA: true
-      SECRET_KEY_BASE: dOxZYTTZgXKMHkqLBIQVImayQXAVWdzGBPuFJKggzcgvgPJPXpWzqzKaUOIOGGIr
+      SECRET_KEY_BASE: ${dawarichsecretkeybase}
       APPLICATION_HOSTS: dawarich.ashish-syn-nas.synology.me
       MIN_MINUTES_SPENT_IN_CITY: 60
       TIME_ZONE: America/Los_Angeles
@@ -109,7 +109,7 @@ services:
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: password
       DATABASE_NAME: dawarich_development
-      SECRET_KEY_BASE: dOxZYTTZgXKMHkqLBIQVImayQXAVWdzGBPuFJKggzcgvgPJPXpWzqzKaUOIOGGIr
+      SECRET_KEY_BASE: ${dawarichsecretkeybase}
       APPLICATION_HOSTS: dawarich.ashish-syn-nas.synology.me
       BACKGROUND_PROCESSING_CONCURRENCY: 10
       PROMETHEUS_EXPORTER_ENABLED: false
@@ -119,7 +119,7 @@ services:
       STORE_GEODATA: true
       APPLICATION_PROTOCOL: http
       PHOTON_API_HOST: app.chibigeo.com/v1/photon
-      PHOTON_API_KEY: ck__GtZ4AfHRdG3WESauDyQygvM3GY8GaQs
+      PHOTON_API_KEY: ${dawarichphoton}
       PHOTON_API_USE_HTTPS: true
     logging:
       driver: "json-file"
