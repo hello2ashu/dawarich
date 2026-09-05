@@ -110,7 +110,7 @@ services:
       DATABASE_PASSWORD: password
       DATABASE_NAME: dawarich_development
       SECRET_KEY_BASE: ${dawarichsecretkeybase}
-      APPLICATION_HOSTS: dawarich.ashish-syn-nas.synology.me,192.168.189.1
+      APPLICATION_HOSTS: dawarich.ashish-syn-nas.synology.me,192.168.189.1,localhost,192.168.189.40,192.168.189.41
       BACKGROUND_PROCESSING_CONCURRENCY: 10
       PROMETHEUS_EXPORTER_ENABLED: false
       PROMETHEUS_EXPORTER_HOST: dawarich_app
