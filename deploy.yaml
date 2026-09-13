@@ -16,6 +16,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: dawarich_development
+      TIME_ZONE: America/Los_Angeles
     shm_size: 1G
     restart: on-failure:5
 
@@ -121,6 +122,7 @@ services:
       PHOTON_API_HOST: app.chibigeo.com/v1/photon
       PHOTON_API_KEY: ${dawarichphoton}
       PHOTON_API_USE_HTTPS: true
+      TIME_ZONE: America/Los_Angeles
     logging:
       driver: "json-file"
       options:
