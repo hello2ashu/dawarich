@@ -2,6 +2,14 @@ services:
   # Old standalone "dawarich_redis" service removed — Dawarich now uses the
   # shared_redis container from deploy-shared-postgres.yaml, on logical DB 0.
   # Requires joining the "shared-postgres_net" external network.
+  #
+  # Both REDIS_URL lines below use "shared_redis" (the hostname set on that
+  # container), not "Shared-Redis" (its container_name). Both resolve today, but
+  # only "shared_redis" matches every other file in this stack — see the note on
+  # container name vs. hostname from earlier in this conversation.
+  #
+  # Both PHOTON_API_KEY lines below reference ${dawarichphoton} — a single shared
+  # variable, since this is the same external API key used by both processes.
 
   dawarich_db:
     image: postgis/postgis:17-3.6-alpine
@@ -45,7 +53,7 @@ services:
     command: ['bin/rails', 'server', '-p', '3000', '-b', '::']
     environment:
       RAILS_ENV: development
-      REDIS_URL: redis://Shared-Redis:6379/0
+      REDIS_URL: redis://shared_redis:6379/0
       DATABASE_HOST: dawarich_db
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: ${dawarichdbpassword}
@@ -63,7 +71,7 @@ services:
       ENABLE_TELEMETRY: false # More on telemetry: https://dawarich.app/docs/tutorials/telemetry
       APPLICATION_PROTOCOL: http
       PHOTON_API_HOST: app.chibigeo.com/v1/photon
-      PHOTON_API_KEY: ${photonapikey}
+      PHOTON_API_KEY: ${dawarichphoton}
       PHOTON_API_USE_HTTPS: true
     logging:
       driver: "json-file"
@@ -104,7 +112,7 @@ services:
     command: ['sidekiq']
     environment:
       RAILS_ENV: development
-      REDIS_URL: redis://Shared-Redis:6379/0
+      REDIS_URL: redis://shared_redis:6379/0
       DATABASE_HOST: dawarich_db
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: ${dawarichdbpassword}
