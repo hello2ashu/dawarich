@@ -1,4 +1,8 @@
 services:
+  # Old standalone "dawarich_redis" service removed — Dawarich now uses the
+  # shared_redis container from deploy-shared-postgres.yaml, on logical DB 0.
+  # Requires joining the "shared-postgres_net" external network.
+
   dawarich_db:
     image: postgis/postgis:17-3.6-alpine
     container_name: Dawarich-DB
@@ -14,30 +18,11 @@ services:
       - /volume1/docker/dawarich/shared:/var/shared:rw
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${dawarichdbpassword}
       POSTGRES_DB: dawarich_development
       TIME_ZONE: America/Los_Angeles
     shm_size: 1G
     mem_limit: 512m
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "20m"
-        max-file: "3"
-    restart: on-failure:5
-
-  dawarich_redis:
-    image: redis:8.10.1-alpine
-    command: redis-server
-    container_name: Dawarich-REDIS
-    user: 1026:100
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
-    volumes:
-      - /volume1/docker/dawarich/redis:/data:rw
-    environment:
-      TZ: America/Los_Angeles
-    mem_limit: 256m
     logging:
       driver: "json-file"
       options:
@@ -60,10 +45,10 @@ services:
     command: ['bin/rails', 'server', '-p', '3000', '-b', '::']
     environment:
       RAILS_ENV: development
-      REDIS_URL: redis://dawarich_redis:6379
+      REDIS_URL: redis://shared_redis:6379/0
       DATABASE_HOST: dawarich_db
       DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: password
+      DATABASE_PASSWORD: ${dawarichdbpassword}
       DATABASE_NAME: dawarich_development
       SELF_HOSTED: true
       STORE_GEODATA: true
@@ -78,7 +63,7 @@ services:
       ENABLE_TELEMETRY: false # More on telemetry: https://dawarich.app/docs/tutorials/telemetry
       APPLICATION_PROTOCOL: http
       PHOTON_API_HOST: app.chibigeo.com/v1/photon
-      PHOTON_API_KEY: ck__GtZ4AfHRdG3WESauDyQygvM3GY8GaQs
+      PHOTON_API_KEY: ${photonapikey}
       PHOTON_API_USE_HTTPS: true
     logging:
       driver: "json-file"
@@ -95,8 +80,9 @@ services:
     depends_on:
       dawarich_db:
         condition: service_healthy
-      dawarich_redis:
-        condition: service_healthy
+    networks:
+      - default
+      - shared-postgres_net
     restart: on-failure:5
 
   dawarich_sidekiq:
@@ -118,10 +104,10 @@ services:
     command: ['sidekiq']
     environment:
       RAILS_ENV: development
-      REDIS_URL: redis://dawarich_redis:6379
+      REDIS_URL: redis://shared_redis:6379/0
       DATABASE_HOST: dawarich_db
       DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: password
+      DATABASE_PASSWORD: ${dawarichdbpassword}
       DATABASE_NAME: dawarich_development
       SECRET_KEY_BASE: ${dawarichsecretkeybase}
       APPLICATION_HOSTS: dawarich.ashish-syn-nas.synology.me,192.168.189.1,localhost,192.168.189.40,192.168.189.41
@@ -145,8 +131,13 @@ services:
     depends_on:
       dawarich_db:
         condition: service_healthy
-      dawarich_redis:
-        condition: service_healthy
       dawarich_app:
         condition: service_healthy
+    networks:
+      - default
+      - shared-postgres_net
     restart: on-failure:5
+
+networks:
+  shared-postgres_net:
+    external: true
